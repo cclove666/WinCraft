@@ -1,0 +1,37 @@
+# ===== Line endings =====
+* text=auto
+
+# C# source
+*.cs text eol=crlf diff=csharp
+*.csproj text eol=crlf merge=union
+*.sln text eol=crlf merge=union
+*.slnx text eol=crlf merge=union
+*.xaml text eol=crlf
+*.config text eol=crlf
+*.xml text eol=crlf
+*.json text eol=crlf
+*.ps1 text eol=crlf
+*.nsi text eol=crlf
+*.nsh text eol=crlf
+*.md text eol=crlf
+
+# ===== Binary files =====
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.bmp binary
+*.psd binary
+*.zip binary
+*.rar binary
+*.dll binary
+*.exe binary
+*.pdb binary
+*.ttf binary
+*.woff binary
+*.woff2 binary
+
+# ===== Exclude from diff =====
+*.resx -text
+*.Designer.cs -text

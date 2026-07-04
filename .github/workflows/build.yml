@@ -1,0 +1,36 @@
+name: Build WinCraft
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 9 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.x'
+
+      - name: Build WinCraft
+        shell: powershell
+        run: |
+          .\publish\build.ps1 -Configuration Release -BuildOnly
+
+      - name: Package artifact (net45)
+        shell: powershell
+        run: |
+          $src = "src\bin\Release\net45\*"
+          $dest = "artifact\WinCraft"
+          New-Item -ItemType Directory -Path $dest -Force
+          Copy-Item -Path $src -Destination $dest -Recurse -Force
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: WinCraft-portable
+          path: artifact/WinCraft/
