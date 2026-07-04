@@ -16,18 +16,23 @@ jobs:
         with:
           dotnet-version: '9.x'
 
-      - name: Install .NET Framework 4.5.2 Targeting Pack
+      - name: Install .NET Framework 4.5.2 and create symlink
         shell: powershell
         run: |
           $url = "https://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe"
           $installer = "$env:TEMP\ndp452.exe"
           Invoke-WebRequest -Uri $url -OutFile $installer
           Start-Process -FilePath $installer -ArgumentList "/q /norestart" -Wait -NoNewWindow
+          $refDir = "${env:ProgramFiles(x86)}\Reference Assemblies\Microsoft\Framework\.NETFramework"
+          if ((Test-Path "$refDir\v4.5.2") -and -not (Test-Path "$refDir\v4.5")) {
+            New-Item -ItemType Junction -Path "$refDir\v4.5" -Target "$refDir\v4.5.2" -Force
+          }
 
-      - name: Build WinCraft
+      - name: Build WinCraft (net45)
         shell: powershell
         run: |
-          .\publish\build.ps1 -Configuration Release -BuildOnly
+          dotnet restore src/WinCraft/WinCraft.csproj -p:TargetFramework=net45
+          dotnet build src/WinCraft/WinCraft.csproj -c Release -f net45 -p:Net30ValidationBuild=true
 
       - name: Package artifact (net45)
         shell: powershell
